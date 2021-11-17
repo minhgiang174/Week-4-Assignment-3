@@ -7,11 +7,12 @@ rankhospital <- function(state, outcome, num = "best")
   names(data) <- 1:46
   outcomes <- c("heart attack" = 11, "heart failure" = 17, "pneumonia" = 23)
   my_data <- data[, c(2,7,outcomes[outcome])]
-  names(my_data) <- c("hospital", "state", outcome)
+  names(my_data) <- c("hospital", "state", "outcomedata")
   
   stlist <- which(my_data[, 2] == state)
   stdata <- my_data[stlist, ]
   stdata <- na.omit(stdata)
+  
   ## Check that state and outcome are valid
   if (length(stlist) == 0) {
     stop("invalid state")
@@ -21,20 +22,13 @@ rankhospital <- function(state, outcome, num = "best")
   }
 
   ## Return hospital name in that state with the given rank
-  ind <- stdata[, 1]
-  sorted <- sort.list(stdata[, 3])
-  stdata <- stdata[sorted, ]
+  library(plyr)
+  arrangedata <- arrange(stdata, outcomedata, state)
   
-  if (num = "best") {
-    return(stdata[1, 1])
-  }
-      
-  if (num = "worst") {
-    num == length(ind)
-    return(stdata[1, num])
-  }
+  best <- 1
+  worst <- nrow(arrangedata)
   
-  else
-  stdata[1, num]
 
+  ##return(arrangedata[1, num])
+  return(worst)
 }
